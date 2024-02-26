@@ -18,12 +18,15 @@ DISCLAIMER: You should most likely read the `Integrating it into an existing pro
 
 
 `cd` to your local project folder and run `git clone  git@cau-git.rz.uni-kiel.de:MSB/pipelines/gapseq_pipeline.git` and activate your mamba env containing snakemake.
-If you do not already have a =ssh key setup for gitlab, please read the three links down below or google `How to setup ssh with gitlab`.
-https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair
+If you do not already have a =ssh key setup for gitlab, please read the three links down below or google `How to setup ssh with gitlab`. 
 
-https://docs.gitlab.com/ee/user/ssh.html#configure-ssh-to-point-to-a-different-directory
+[Link 1](https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair)
 
-https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account
+[Link 2](https://docs.gitlab.com/ee/user/ssh.html#configure-ssh-to-point-to-a-different-directory)
+
+[Link 3](https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account)
+
+If you wanna learn more about ssh ask ChatGPT :). 
 
 Lets now assume there exist some folder called `MyMAGs` with files called $mag1.fa$ to $magn.fa$ that contains your pre-build MAGs.
 To tell the pipeline to use this folder as input open the `config.yaml` and change the `input_folder` and `mag_ending` to the appropriate values. 
