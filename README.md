@@ -17,7 +17,13 @@ Ever wanted to fast and easily build gapseqs? Now is your chance! Just 4.99$ per
 DISCLAIMER: You should most likely read the `Integrating it into an existing project` section down below. The current section will make it quite annoying to integrate this pipeline into an existing git project. And because you are a good person you adhere to Thomas' idea of how to structure a project you want to use git for everything :).
 
 
-`cd` to your local project folder and run `git clone  git@cau-git.rz.uni-kiel.de:MSB/pipelines/gapseq_pipeline.git` and activate your mamba env containing snakemake
+`cd` to your local project folder and run `git clone  git@cau-git.rz.uni-kiel.de:MSB/pipelines/gapseq_pipeline.git` and activate your mamba env containing snakemake.
+If you do not already have a =ssh key setup for gitlab, please read the three links down below or google `How to setup ssh with gitlab`.
+https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair
+
+https://docs.gitlab.com/ee/user/ssh.html#configure-ssh-to-point-to-a-different-directory
+
+https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account
 
 Lets now assume there exist some folder called `MyMAGs` with files called $mag1.fa$ to $magn.fa$ that contains your pre-build MAGs.
 To tell the pipeline to use this folder as input open the `config.yaml` and change the `input_folder` and `mag_ending` to the appropriate values. 
