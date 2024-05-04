@@ -2,7 +2,7 @@ cluster:
   mkdir -p logs/{rule} &&
   sbatch
     --qos={resources.qos}
-    --cpus-per-task={resources.threads}
+    --cpus-per-task={threads}
     --mem={resources.mem_mb}
     --time={resources.time}
     --job-name=smk-{rule}-{wildcards}
