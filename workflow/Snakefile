@@ -1,5 +1,5 @@
 ####
-from os import listdir, rename
+from os import listdir, rename, chdir, remove
 from os.path import isfile, join, exists
 import yaml
 import subprocess
@@ -64,7 +64,11 @@ if not exists(join("..","gapseq","gapseq")):
         rename("gapseq",join("..","gapseq"))
     else:
         raise ValueError("Could not download gapseq")
-
+else:
+    chdir(join("..","gapseq"))
+    check = subprocess.run(["git","pull"])
+    if check.returncode == 0 and exists("db_updated.txt"):
+        remove("db_updated.txt")
 
 if not exists(join("..","gapseq","db_updated.txt")):
     check = subprocess.run(["bash",join("..","gapseq","src","update_sequences.sh")])
