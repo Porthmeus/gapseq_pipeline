@@ -1,4 +1,4 @@
-####
+#### Header
 from os import listdir, rename, chdir, remove
 from os.path import isfile, join, exists
 import yaml
@@ -91,8 +91,6 @@ rule all:
                 expand(os.path.join(out_folder, "final_model/{file}.RDS"), file = binnames),
                 expand(os.path.join(out_folder, "final_model/{file}.xml"), file = binnames)
 
-
-
 rule prodigal:
         input:
                 bin= os.path.join(input_folder,"{file}") + extension
@@ -121,7 +119,8 @@ rule pathway:
         conda:
                "envs/gapseq.yml"
         resources:
-                time= "6:00:00"
+                time= "24:00:00",
+                mem_mb = "24000"
         threads: 10
         shell:
                 """
@@ -143,12 +142,12 @@ rule transporter:
                "envs/gapseq.yml"
         resources:
                 time= "6:30:00"
-        threads: 10
         shell:
                 """
                 ../gapseq/gapseq find-transport -v 0 -K {threads}  -b 200 {input.faa} > {log.stdout} 2> {log.stderr} &&
                 mv {wildcards.file}-Transporter.tbl {output.out}
                 """
+
 rule draft_model:
         input:
                 "../gapseq/",
@@ -174,6 +173,7 @@ rule draft_model:
         mv {wildcards.file}-rxnWeights.RDS {output.weights} &&
         mv {wildcards.file}-rxnXgenes.RDS {output.genes}
                 """
+
 rule medium:
         input:
                 "../gapseq/",
@@ -205,6 +205,8 @@ rule gap_filling:
         log:
                 stdout = "logs/gap_filling/{file}.out",  stderr = "logs/gap_filling/{file}.err"  
         threads: 1
+        resources:
+            time = "12:00:00"
         conda:
                "envs/gapseq.yml"
         shell:
