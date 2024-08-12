@@ -77,6 +77,9 @@ and run `git submodule add  git@cau-git.rz.uni-kiel.de:MSB/pipelines/gapseq_pipe
 The next step is then .... contact Thomas because this is currently fully implemented but not documented
 
 
+## Contributors
+
+Dr. Jan Taubenheim (Rewriting gapseq download, various fixes)
 
 ## Contributing 
 
