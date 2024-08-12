@@ -61,6 +61,9 @@ binnames = [os.path.splitext(file_name)[0] for file_name in binnames]
 if not exists(join("..","gapseq","gapseq")):
     check = subprocess.run(["git", "clone", "https://github.com/jotech/gapseq"])
     if check.returncode == 0:
+        # Moves gapseq env file an the whole gapseq dir one level up
+        # We do this because the snakemake process is being executed from the workflow dir
+        # but the pipeline expects gapseq in the root directory
         rename(join("gapseq","gapseq_env.yml"), "gapseq_env.yml")
         rename("gapseq",join("..","gapseq"))
     else:
