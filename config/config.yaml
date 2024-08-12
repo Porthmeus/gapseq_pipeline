@@ -11,3 +11,5 @@ use_medium: "true"
 # Keep list: Path to a list of MAG names that should be used in model building, ignored if ""
 # This settings enables you to only build models for a subset of all bins specified in the input_folder
 keep_list: ""
+# If disabled the pipeline will pull the gapseq repo every time when the pipeline starts, additionally it will try to update the pipeline. This behaviour is troublesome with regards to reproducibility because running the pipeline at different time points for the same genome could produce different models.
+skip_pull: True

@@ -1,7 +1,8 @@
-####
-from os import listdir
-from os.path import isfile, join
+#### Header
+from os import listdir, rename, chdir, remove
+from os.path import isfile, join, exists
 import yaml
+import subprocess
 
 
 configfile: "../config/config.yaml"
@@ -12,6 +13,7 @@ mag_ending          =  config["mag_ending"]
 use_medium          =  config["use_medium"]
 keep_list_folder    =  config["keep_list"]
 extension           =  config["mag_ending"]
+skip_pull           =  config["skip_pull"]
 
 keep_list           = []
 bin_names           = []
@@ -55,9 +57,34 @@ else:
 
 binnames = [os.path.splitext(file_name)[0] for file_name in binnames]
 
+### download gapseq and its sequences ###
+if not exists(join("..","gapseq","gapseq")):
+    check = subprocess.run(["git", "clone", "https://github.com/jotech/gapseq"])
+    if check.returncode == 0:
+        # Moves gapseq env file an the whole gapseq dir one level up
+        # We do this because the snakemake process is being executed from the workflow dir
+        # but the pipeline expects gapseq in the root directory
+        rename(join("gapseq","gapseq_env.yml"), "gapseq_env.yml")
+        rename("gapseq",join("..","gapseq"))
+    else:
+        raise ValueError("Could not download gapseq")
+else:
+    chdir(join("..","gapseq"))
+    if skip_pull == False:
+      check = subprocess.run(["git","pull"])
+      if check.returncode == 0 and exists("db_updated.txt"):
+          remove("db_updated.txt")
+
+if not exists(join("..","gapseq","db_updated.txt")):
+    check = subprocess.run(["bash",join("..","gapseq","src","update_sequences.sh")])
+    if check.returncode == 0:
+        with open(join("..","gapseq","db_updated.txt"),"w") as ff:
+            ff.write("")
+    else:
+        raise ValueError("Could not update gapseq databases!")
+
 rule all:
         input: 
-                "../gapseq",
                 expand(os.path.join(out_folder, "prodigal/{file}.faa"), file = binnames),
                 expand(os.path.join(out_folder, "gapseq_find/{file}-all-Pathways.tbl"), file = binnames),
                 expand(os.path.join(out_folder, "gapseq_find/{file}-all-Reactions.tbl"), file = binnames),
@@ -69,16 +96,6 @@ rule all:
                 expand(os.path.join(out_folder, "final_model/{file}.RDS"), file = binnames),
                 expand(os.path.join(out_folder, "final_model/{file}.xml"), file = binnames)
 
-rule clone_gs:
-        output:
-                directory("../gapseq")
-        log: stdout="logs/clone_gs.out", stderr="logs/clone_gs.err"
-        shell: 
-                """
-                git clone https://github.com/jotech/gapseq && mv gapseq/gapseq_env.yml gapseq.yml &&		     mv gapseq ../
-
-                """
-
 rule prodigal:
         input:
                 bin= os.path.join(input_folder,"{file}") + extension
@@ -86,11 +103,12 @@ rule prodigal:
                 out= os.path.join(out_folder, "prodigal/{file}.faa")
         log:
                 stdout = "logs/prodigal/{file}.out",  stderr = "logs/prodigal/{file}.err"  
+        threads: 1
         conda:
                 "envs/prodigal.yml"
         shell:
                 """
-                prodigal -i {input.bin} -o /dev/null -a {output.out}
+                prodigal -i {input.bin} -o /dev/null -a {output.out} > {log.stdout} 2> {log.stderr}
                 """
 
 rule pathway:
@@ -102,14 +120,16 @@ rule pathway:
                 react=os.path.join(out_folder, "gapseq_find/{file}-all-Reactions.tbl")
         log:
                 stdout = "logs/pathway/{file}.out",  stderr = "logs/pathway/{file}.err"  
+        threads: 1
         conda:
                "envs/gapseq.yml"
         resources:
-                threads = 10,
-                time= "6:00:00"
+                time= "24:00:00",
+                mem_mb = "24000"
+        threads: 10
         shell:
                 """
-                ../gapseq/gapseq find -v 0  -b 200 -p all -K {resources.threads} -O  {input.faa} && 
+                ../gapseq/gapseq find -v 0  -b 200 -p all -K {threads} -O  {input.faa} > {log.stdout} 2> {log.stderr} && 
                 mv {wildcards.file}-all-Pathways.tbl {output.out} &&
                 mv {wildcards.file}-all-Reactions.tbl {output.react}
                 """
@@ -122,16 +142,17 @@ rule transporter:
                 out=os.path.join(out_folder, "gapseq_transport/{file}-Transporter.tbl")
         log:
                 stdout = "logs/transporter/{file}.out",  stderr = "logs/transporter/{file}.err"  
+        threads: 1
         conda:
                "envs/gapseq.yml"
         resources:
-                threads = 10,
                 time= "6:30:00"
         shell:
                 """
-                ../gapseq/gapseq find-transport -v 0 -K {resources.threads}  -b 200 {input.faa} &&
+                ../gapseq/gapseq find-transport -v 0 -K {threads}  -b 200 {input.faa} > {log.stdout} 2> {log.stderr} &&
                 mv {wildcards.file}-Transporter.tbl {output.out}
                 """
+
 rule draft_model:
         input:
                 "../gapseq/",
@@ -146,16 +167,18 @@ rule draft_model:
                 genes     =os.path.join(out_folder, "gapseq_draft/{file}-rxnXgenes.RDS")
         log:
                 stdout = "logs/draft_model/{file}.out",  stderr = "logs/draft_model/{file}.err"  
+        threads: 1
         conda: 
                "envs/gapseq.yml"
         shell: 
                 """
-        ../gapseq/gapseq draft -r {input.react} -t {input.trans} -c {input.faa} -u 200 -l 100 -p {input.path} #&&
+        ../gapseq/gapseq draft -r {input.react} -t {input.trans} -c {input.faa} -u 200 -l 100 -p {input.path} > {log.stdout} 2> {log.stderr} &&
         mv {wildcards.file}-draft.RDS {output.draft_rds} &&
         mv {wildcards.file}-draft.xml {output.draft_xml} &&
         mv {wildcards.file}-rxnWeights.RDS {output.weights} &&
         mv {wildcards.file}-rxnXgenes.RDS {output.genes}
                 """
+
 rule medium:
         input:
                 "../gapseq/",
@@ -165,12 +188,13 @@ rule medium:
                 med= os.path.join(out_folder, "generated_medium/{file}-medium.csv")
         log:
                 stdout = "logs/medium/{file}.out",  stderr = "logs/medium/{file}.err"  
+        threads: 1
         conda:
                 "envs/gapseq.yml"
         shell:
                 """
                 ../gapseq/gapseq medium -m {input.draft} -p {input.path} &&
-                mv {wildcards.file}-medium.csv {output.med}
+                mv {wildcards.file}-medium.csv {output.med} > {log.stdout} 2> {log.stderr}
                """
 
 rule gap_filling:
@@ -185,15 +209,18 @@ rule gap_filling:
                 xml_model=os.path.join(out_folder,"final_model/{file}.xml")
         log:
                 stdout = "logs/gap_filling/{file}.out",  stderr = "logs/gap_filling/{file}.err"  
+        threads: 1
+        resources:
+            time = "12:00:00"
         conda:
                "envs/gapseq.yml"
         shell:
                 """
                 # TODO MUCH CLEAN TO SET A VARIABLE IN THE IF AND THEN EXECUTE GS
                 if [ {use_medium} == "true" ]; then
-                    ../gapseq/gapseq fill -m {input.draft} -n {medium} -c {input.weights} -b 100 -g {input.genes} &&  mv {wildcards.file}.xml  {output.xml_model} && mv {wildcards.file}.RDS  {output.rds_model}
+                    ../gapseq/gapseq fill -m {input.draft} -n {medium} -c {input.weights} -b 100 -g {input.genes} &&  mv {wildcards.file}.xml  {output.xml_model} && mv {wildcards.file}.RDS  {output.rds_model} > {log.stdout} 2> {log.stderr}
                 else
-                    ../gapseq/gapseq fill -m {input.draft} -n {input.med} -c {input.weights} -b 100 -g {input.genes} &&  mv {wildcards.file}.xml  {output.xml_model} && mv {wildcards.file}.RDS  {output.rds_model}
+                    ../gapseq/gapseq fill -m {input.draft} -n {input.med} -c {input.weights} -b 100 -g {input.genes} &&  mv {wildcards.file}.xml  {output.xml_model} && mv {wildcards.file}.RDS  {output.rds_model} > {log.stdout} 2> {log.stderr}
                 fi
                 """
 
