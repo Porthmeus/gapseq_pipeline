@@ -121,13 +121,12 @@ rule pathway:
                 react=os.path.join(out_folder, "gapseq_find/{file}-all-Reactions.tbl")
         log:
                 stdout = "logs/pathway/{file}.out",  stderr = "logs/pathway/{file}.err"  
-        threads: 12
         conda:
                "envs/gapseq.yml"
         resources:
                 time= "48:00:00",
                 mem_mb = "24000"
-        threads: 10
+        threads: 12
         shell:
                 """
                 ../gapseq/gapseq find -v 0  -b 200 -p all -K {threads} -O  {input.faa} > {log.stdout} 2> {log.stderr} && 
