@@ -6,8 +6,8 @@ cluster:
     --mem={resources.mem_mb}
     --time={resources.time}
     --job-name=smk-{rule}-{wildcards}
-    --output=logs/{rule}/{rule}-{wildcards}-%j.out
-    --error=logs/{rule}/{rule}-{wildcards}-%j.err
+    --output=logs/{rule}/{wildcards}_clusterLog.out
+    --error=logs/{rule}/{wildcards}_clusterLog.err
     --parsable
 default-resources:
   - qos=normal
