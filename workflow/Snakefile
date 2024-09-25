@@ -86,14 +86,14 @@ if not exists(join("..","gapseq","db_updated.txt")):
 
 rule all:
         input: 
-                expand(os.path.join(out_folder, "prodigal/{file}.faa"), file = binnames),
-                expand(os.path.join(out_folder, "gapseq_find/{file}-all-Pathways.tbl"), file = binnames),
-                expand(os.path.join(out_folder, "gapseq_find/{file}-all-Reactions.tbl"), file = binnames),
-                expand(os.path.join(out_folder, "gapseq_transport/{file}-Transporter.tbl"), file = binnames),
-                expand(os.path.join(out_folder, "gapseq_draft/{file}-draft.RDS"), file = binnames),
-                expand(os.path.join(out_folder, "gapseq_draft/{file}-rxnWeights.RDS"), file = binnames),
-                expand(os.path.join(out_folder, "gapseq_draft/{file}-rxnXgenes.RDS"), file = binnames),
-                expand(os.path.join(out_folder, "generated_medium/{file}-medium.csv"), file = binnames),
+            #                expand(os.path.join(out_folder, "prodigal/{file}.faa"), file = binnames),
+            #                expand(os.path.join(out_folder, "gapseq_find/{file}-all-Pathways.tbl"), file = binnames),
+            #                expand(os.path.join(out_folder, "gapseq_find/{file}-all-Reactions.tbl"), file = binnames),
+            #                expand(os.path.join(out_folder, "gapseq_transport/{file}-Transporter.tbl"), file = binnames),
+            #                expand(os.path.join(out_folder, "gapseq_draft/{file}-draft.RDS"), file = binnames),
+            #                expand(os.path.join(out_folder, "gapseq_draft/{file}-rxnWeights.RDS"), file = binnames),
+            #                expand(os.path.join(out_folder, "gapseq_draft/{file}-rxnXgenes.RDS"), file = binnames),
+            #                expand(os.path.join(out_folder, "generated_medium/{file}-medium.csv"), file = binnames),
                 expand(os.path.join(out_folder, "final_model/{file}.RDS"), file = binnames),
                 expand(os.path.join(out_folder, "final_model/{file}.xml"), file = binnames)
 
@@ -114,7 +114,7 @@ rule prodigal:
 
 rule pathway:
         input:
-                "../gapseq/",
+                #"../gapseq/",
                 faa=  os.path.join(out_folder, "prodigal/{file}.faa")
         output:
                 out=os.path.join(out_folder, "gapseq_find/{file}-all-Pathways.tbl"),
@@ -136,7 +136,7 @@ rule pathway:
 
 rule transporter:
         input:
-                "../gapseq/",
+                #"../gapseq/",
                 faa=os.path.join(out_folder, "prodigal/{file}.faa")
         output: 
                 out=os.path.join(out_folder, "gapseq_transport/{file}-Transporter.tbl")
@@ -155,7 +155,7 @@ rule transporter:
 
 rule draft_model:
         input:
-                "../gapseq/",
+                #"../gapseq/",
                 faa   =os.path.join(out_folder, "prodigal/{file}.faa"),
                 path  =os.path.join(out_folder, "gapseq_find/{file}-all-Pathways.tbl"),
                 react =os.path.join(out_folder, "gapseq_find/{file}-all-Reactions.tbl"),
@@ -181,7 +181,7 @@ rule draft_model:
 
 rule medium:
         input:
-                "../gapseq/",
+                #"../gapseq/",
                 draft =os.path.join(out_folder, "gapseq_draft/{file}-draft.RDS"),
                 path  =os.path.join(out_folder, "gapseq_find/{file}-all-Pathways.tbl")
         output:
@@ -199,7 +199,7 @@ rule medium:
 
 rule gap_filling:
         input:
-                "../gapseq/",
+                #"../gapseq/",
                 draft   = os.path.join(out_folder, "gapseq_draft/{file}-draft.RDS"),
                 weights = os.path.join(out_folder, "gapseq_draft/{file}-rxnWeights.RDS"),
                 genes   = os.path.join(out_folder, "gapseq_draft/{file}-rxnXgenes.RDS"),
