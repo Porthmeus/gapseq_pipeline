@@ -4,8 +4,8 @@ out_folder: "../../models/"
 mag_ending: ".fa"
 # Folder of the MAGs. All the MAGs should end in `mag_ending`
 input_folder: "../../MAGs/"
-# Currently unused due to the fact the we do use the predicted media
-medium: "../../matjes-diet30112020.csv"
+# Diet file for gapseq
+medium: "../../diet/matjesdiet_gapseq_2025-04-23.csv"
 # Use the above specified medium or not not. Can be set to "true" or "false"
 use_medium: "true"
 # Keep list: Path to a list of MAG names that should be used in model building, ignored if ""
