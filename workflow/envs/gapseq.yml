@@ -21,7 +21,8 @@ dependencies:
   - glpk
   - hmmer
   - blast
-  - bioconda::libsbml<5.19
+#  - bioconda::libsbml<5.19
+  - libsbml
   - r-data.table
   - r-stringr
   - r-stringi
@@ -37,3 +38,4 @@ dependencies:
   - r-glpkapi
   - r-rcurl
   - r-httr
+  - r-cobrar
