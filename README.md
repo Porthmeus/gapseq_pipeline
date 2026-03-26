@@ -9,21 +9,7 @@
 * Love for metabolic modelling 
 
 ## Starting a new project
-DISCLAIMER: You should most likely read the `Integrating it into an existing project` section down below (if you use git to manage your files). The current section will make it quite annoying to integrate this pipeline into an existing git project. And because you are a good person you adhere to Thomas' idea of how to structure a project you want to use git for everything :).
-
-
-`cd` to your local project folder and run `git clone  git@cau-git.rz.uni-kiel.de:MSB/pipelines/gapseq_pipeline.git` and activate your mamba env containing snakemake.
-If you do not already have a ssh key setup for gitlab, please read the three links down below or google `How to setup ssh with gitlab`. 
-
-[Link 1](https://docs.gitlab.com/ee/user/ssh.html#generate-an-ssh-key-pair)
-
-[Link 2](https://docs.gitlab.com/ee/user/ssh.html#configure-ssh-to-point-to-a-different-directory)
-
-[Link 3](https://docs.gitlab.com/ee/user/ssh.html#add-an-ssh-key-to-your-gitlab-account)
-
-There is a video tutorial that can be found here [HERE](https://www.youtube.com/watch?v=5Ck07BJDXTE&ab_channel=CameronMcKenzie). It is for windows but that does not matter.
-
-If you wanna learn more about ssh ask ChatGPT :). 
+`cd` to your local project folder and clone the repository and activate your mamba env containing snakemake.
 
 Lets now assume there exist some folder called `MyMAGs` with files called $mag1.fa$ to $magn.fa$ that contains your pre-build MAGs.
 To tell the pipeline to use this folder as input open the `config.yaml` and change the `input_folder` and `mag_ending` to the appropriate values. 
