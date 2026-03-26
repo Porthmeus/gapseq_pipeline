@@ -1,10 +1,5 @@
 
-![Alt text](https://i.kym-cdn.com/photos/images/newsfeed/000/016/809/rtfm.jpg?1318992465)
-
 # MSB GAPSEQ PIPELINE
-Ever wanted to fast and easily build gapseqs? Now is your chance! Just 4.99$ per month. Please contact your local HiWi
-
-
 
 ## Prerequisites 
 * mamba
@@ -14,7 +9,7 @@ Ever wanted to fast and easily build gapseqs? Now is your chance! Just 4.99$ per
 * Love for metabolic modelling 
 
 ## Starting a new project
-DISCLAIMER: You should most likely read the `Integrating it into an existing project` section down below (if you use git to mange your files). The current section will make it quite annoying to integrate this pipeline into an existing git project. And because you are a good person you adhere to Thomas' idea of how to structure a project you want to use git for everything :).
+DISCLAIMER: You should most likely read the `Integrating it into an existing project` section down below (if you use git to manage your files). The current section will make it quite annoying to integrate this pipeline into an existing git project. And because you are a good person you adhere to Thomas' idea of how to structure a project you want to use git for everything :).
 
 
 `cd` to your local project folder and run `git clone  git@cau-git.rz.uni-kiel.de:MSB/pipelines/gapseq_pipeline.git` and activate your mamba env containing snakemake.
@@ -79,18 +74,9 @@ The next step is then .... contact Thomas because this is currently fully implem
 
 ## Contributors
 
-Dr. Jan Taubenheim (Rewriting gapseq download, various fixes)
+[Dr. Jan Taubenheim](https://github.com/Porthmeus/) (Rewriting gapseq download, various fixes)
 
 ## Contributing 
 
-Please contact Thomas OR open a pull request 
-
-## Problems
-
-Please contact Thomas AND open an issue with your problem.
-
-A description of what, why and how to open issues can be found here.
-https://docs.gitlab.com/ee/user/project/issues/
-
-
+Please contact [Thomas Dost](https://github.com/unaimend) or [Dr. Jan Taubenheim](https://github.com/Porthmeus/)  OR open a pull request 
 
